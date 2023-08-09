@@ -1,1 +1,370 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
+#include <map>
 
+int Z = -1;
+
+struct StellarSystem 
+{
+  std::map<std::string, std::map<std::string, std::map<std::string, float>>> celestialBodies;
+
+  StellarSystem()
+  {
+      celestialBodies = std::map<std::string, std::map<std::string, std::map<std::string, float>>>();
+  }
+};
+
+void promptUserInput(StellarSystem& system) 
+{
+    std::string systemName;
+    std::cout << "Enter Stellar System name: ";
+    std::cin >> systemName;
+
+    int numSuns;
+    std::cout << "Enter number of suns: ";
+    std::cin >> numSuns;
+
+    for (int i = 0; i < numSuns; i++) 
+    {
+        std::string sunName;
+        std::cout << "Enter sun name: ";
+        std::cin >> sunName;
+        system.celestialBodies[systemName][sunName] = std::map<std::string, float>();
+
+        int numPlanets;
+        std::cout << "Enter number of planets: ";
+        std::cin >> numPlanets;
+
+        for (int j = 0; j < numPlanets; j++) 
+        {
+            std::string planetName;
+            std::cout << "Enter planet name: ";
+            std::cin >> planetName;
+            system.celestialBodies[systemName][sunName][planetName] = 0.0f; // Assuming planets have a default value of 0.0
+        }
+    }
+}
+
+void printStellarSystem(const StellarSystem& system) 
+{
+    for (const auto& systemEntry : system.celestialBodies) 
+    {
+        const std::string& systemName = systemEntry.first;
+        std::cout << "Stellar System: " << systemName << std::endl;
+
+        for (const auto& sunEntry : systemEntry.second) 
+        {
+            const std::string& sunName = sunEntry.first;
+            std::cout << "\tSun: " << sunName << std::endl;
+
+            for (const auto& planetEntry : sunEntry.second) 
+            {
+                const std::string& planetName = planetEntry.first;
+                std::cout << "\t\tPlanet: " << planetName << std::endl;
+            }
+        }
+    }
+}
+
+void promptUserInput2(StellarSystem& system) 
+{            
+        std::string sunNameInput;
+        std::string systemName;
+        std::cout << "Enter Stellar System name to be edited: ";
+        std::cin >> systemName;
+            
+        if (system.celestialBodies[systemName].size() > 1)
+{
+    std::string sunNameInput;
+    std::cout << "Enter Sun name to be edited: ";
+    std::cin >> sunNameInput;
+    if (system.celestialBodies[systemName].find(sunNameInput) == system.celestialBodies[systemName].end()) 
+    {
+        std::cout << "Sun does not exist. Try again." << std::endl;
+        return; // Stop execution if the sun does not exist.
+    }
+}
+  
+            std::string sunMassInput;
+            std::cout << "Enter Sun Mass (1e+24): ";
+            std::cin >> sunMassInput;
+            float sunMass = std::stof(sunMassInput) * 1e+24;
+            system.celestialBodies[systemName][sunNameInput]["Mass"] = sunMass; //1e+24
+        
+            std::string sunGMInput;
+            std::cout << "Enter Sun GM (* 1e+6 km^3/s^2): ";
+            std::cin >> sunGMInput;
+            float sunGM = std::stof(sunGMInput) * 1e+6;
+            system.celestialBodies[systemName][sunNameInput]["GM"] = sunGM; //(* 1e+6 km^3/s^2)
+        
+            std::string sunVolumeInput;
+            std::cout << "Enter Sun Volume (1e+12 km3): ";
+            std::cin >> sunVolumeInput;
+            float sunVolume = std::stof(sunVolumeInput) * 1e+12;
+            system.celestialBodies[systemName][sunNameInput]["Volume"] = sunVolume; //(1e+12 km3)
+          
+            std::string sunVolumetricRadiusInput;
+            std::cout << "Enter Sun Volumetric mean radius (km): ";
+            std::cin >> sunVolumetricRadiusInput;
+            float sunVolumetricRadius = std::stof(sunVolumetricRadiusInput);
+            system.celestialBodies[systemName][sunNameInput]["VM-radius"] = sunVolumetricRadius; //km
+          
+            std::string sunMeanDensityInput;
+            std::cout << "Enter Sun Mean Density (kg/m3): ";
+            std::cin >> sunMeanDensityInput;
+            float sunMeanDensity = std::stof(sunMeanDensityInput);
+            system.celestialBodies[systemName][sunNameInput]["MeDe"] = sunMeanDensity; //(kg/m3)
+          
+            std::string sunSurfaceGravityInput;
+            std::cout << "Enter Sun Surface Gravity (eq.) (m/s2): ";
+            std::cin >> sunSurfaceGravityInput;
+            float sunSurfaceGravity = std::stof(sunSurfaceGravityInput);
+            system.celestialBodies[systemName][sunNameInput]["SuGr"] = sunSurfaceGravity; //(eq.) (m/s2)
+          
+            std::string sunEscapeVelocityInput;
+            std::cout << "Enter Sun Escape Velocity (km/s): ";
+            std::cin >> sunEscapeVelocityInput;
+            float sunEscapeVelocity = std::stof(sunEscapeVelocityInput);
+            system.celestialBodies[systemName][sunNameInput]["Esc-V"] = sunEscapeVelocity; //(km/s)
+          
+            std::string sunEllipticityInput;
+            std::cout << "Enter Sun Ellipticity: ";
+            std::cin >> sunEllipticityInput;
+            float sunEllipticity = std::stof(sunEllipticityInput);
+            system.celestialBodies[systemName][sunNameInput]["Ellipticity"] = sunEllipticity;
+          
+            std::string sunMomentOfInertiaInput;
+            std::cout << "Enter Sun Moment of inertia (I/MR^2): ";
+            std::cin >> sunMomentOfInertiaInput;
+            float sunMomentOfInertia = std::stof(sunMomentOfInertiaInput);
+            system.celestialBodies[systemName][sunNameInput]["Mofi"] = sunMomentOfInertia; //(I/MR^2))
+          
+            std::string sunVisualMagnitudeInput;
+            std::cout << "Enter Sun Visual magnitude V(1,0): ";
+            std::cin >> sunVisualMagnitudeInput;
+            float sunVisualMagnitude = std::stof(sunVisualMagnitudeInput);
+            system.celestialBodies[systemName][sunNameInput]["ViMag"] = sunVisualMagnitude; // V(1,0)
+          
+            std::string sunAbsoluteMagnitudeInput;
+            std::cout << "Enter Sun Absolute magnitude: ";
+            std::cin >> sunAbsoluteMagnitudeInput;
+            float sunAbsoluteMagnitude = std::stof(sunAbsoluteMagnitudeInput);
+            system.celestialBodies[systemName][sunNameInput]["AbMag"] = sunAbsoluteMagnitude;
+          
+            std::string sunLuminosityInput;
+            std::cout << "Enter Sun Luminosity (1e+24 J/s): ";
+            std::cin >> sunLuminosityInput;
+            float sunLuminosity = std::stof(sunLuminosityInput);
+            system.celestialBodies[systemName][sunNameInput]["Luminosity"] = sunLuminosity; // (1e+24 J/s)
+          
+            std::string sunMassConversionRateInput;
+            std::cout << "Enter Sun Mass conversion rate (1e+6 kg/s): ";
+            std::cin >> sunMassConversionRateInput;
+            float sunMassConversionRate = std::stof(sunMassConversionRateInput);
+            system.celestialBodies[systemName][sunNameInput]["MaCR"] = sunMassConversionRate; //(1e+6 kg/s)
+          
+            std::string sunMeanEnergyProductionInput;
+            std::cout << "Enter Sun Mean energy production (10^-3 J/kg s): ";
+            std::cin >> sunMeanEnergyProductionInput;
+            float sunMeanEnergyProduction = std::stof(sunMeanEnergyProductionInput);
+            system.celestialBodies[systemName][sunNameInput]["mEnP"] = sunMeanEnergyProduction; //(10^-3 J/kg s)
+          
+            std::string sunSurfaceEmissionInput;
+            std::cout << "Enter Sun Surface emission (1e+6 J/m^2 s): ";
+            std::cin >> sunSurfaceEmissionInput;
+            float sunSurfaceEmission = std::stof(sunSurfaceEmissionInput);
+            system.celestialBodies[systemName][sunNameInput]["SuEm"] = sunSurfaceEmission; //(1e+6 J/m^2 s)
+          
+            std::string sunSpectralTypeInput;     
+            float siderealRotationPeriod;
+            std::cout << "Enter the sidereal rotation period of the object (in hours): ";
+            std::cin >> siderealRotationPeriod;
+            system.celestialBodies[systemName][sunNameInput]["SRP"] = siderealRotationPeriod;
+            
+            float obliquityToEcliptic;
+            std::cout << "Enter the obliquity of the object to the ecliptic (in degrees): ";
+            std::cin >> obliquityToEcliptic;
+            system.celestialBodies[systemName][sunNameInput]["OETE"] = obliquityToEcliptic;
+            
+            float speedRelativeNearbyStars;
+            std::cout << "Enter the speed of the object relative to nearby stars (in km/s): ";
+            std::cin >> speedRelativeNearbyStars;
+            system.celestialBodies[systemName][sunNameInput]["SRNS"] = speedRelativeNearbyStars;
+            std::string planetName;
+            std::cout << "Enter the planet name to be edited: ";
+            std::cin >> planetName;
+                  
+            if (system.celestialBodies[systemName][sunNameInput].find(planetName) == system.celestialBodies[systemName][sunNameInput].end())
+            {
+                std::cout << "Planet does not exist. Try again." << std::endl;
+            }
+}
+
+bool confirmSave()
+{
+    char choice;
+    std::cout << "Do you want to save the Stellar System to a file? (Y/N): ";
+    std::cin >> choice;
+
+    return (choice == 'Y' || choice == 'y');
+}
+
+void saveToFile(const StellarSystem& system)
+{
+    std::string filename;
+    std::cout << "Enter filename: ";
+    std::cin >> filename;
+
+    std::ofstream file(filename);
+    if (file.is_open()) 
+    {
+        for (const auto& systemEntry : system.celestialBodies) 
+        {
+            const std::string& systemName = systemEntry.first;
+            file << "Stellar System: " << systemName << std::endl;
+
+            for (const auto& sunEntry : systemEntry.second) 
+            {
+                const std::string& sunName = sunEntry.first;
+                file << "\tSun: " << sunName << std::endl;
+
+                for (const auto& planetEntry : sunEntry.second) 
+                {
+                    const std::string& planetName = planetEntry.first;
+                    file << "\t\tPlanet: " << planetName << std::endl;
+                }
+            }
+        }
+        std::cout << "Stellar System saved to file: " << filename << std::endl;
+    file.close();
+    } 
+    else 
+    {
+        std::cout << "Unable to open file." << std::endl;
+    }
+}
+
+void loadAndPrintFile() 
+      {
+    std::string filename;
+    std::cout << "Enter filename: ";
+    std::cin >> filename;
+    std::ifstream file(filename);
+    if (file.is_open()) 
+    {
+        std::string line;
+        while (std::getline(file, line)) 
+        {
+            std::cout << line << std::endl;
+        }
+        file.close();
+    } else 
+    {
+        std::cout << "Unable to open file." << std::endl;
+    }
+}
+
+void loadAndUpdateMap(StellarSystem& system) 
+{
+    std::string filename;
+    std::cout << "Enter filename: ";
+    std::cin >> filename;
+
+    std::ifstream file(filename);
+    if (file.is_open()) 
+    {
+        std::string line;
+        std::string systemName;
+        std::string sunName;
+        std::string planetName;
+        while (std::getline(file, line))
+        {
+            if (line.find("Stellar System: ") != std::string::npos)
+            {
+                systemName = line.substr(16);
+                system.celestialBodies[systemName] = std::map<std::string, std::map<std::string, float>>();
+                std::cout << "Stellar System: " << systemName << std::endl;
+            }
+            else if (line.find("\tSun: ") != std::string::npos)
+            {
+                sunName = line.substr(6);
+                system.celestialBodies[systemName][sunName] = std::map<std::string, float>();
+                std::cout << "Sun: " << sunName << std::endl;
+            }
+            else if (line.find("\t\tPlanet: ") != std::string::npos)
+            {
+                planetName = line.substr(10);
+                std::cout << planetName << std::endl; // Added line
+                system.celestialBodies[systemName][sunName][planetName] = 0.0f;
+                std::cout << "Planet: " << planetName << std::endl;
+            }
+        }
+        promptUserInput2(system);
+        file.close();
+    }
+    else 
+    {
+        std::cout << "Unable to open file." << std::endl;
+    }
+}
+
+bool confirmLoad()
+{
+    char choice;
+    std::cout << "Do you accept this data? You will be asked for the file name again to confirm. (Y/N): ";
+    std::cin >> choice;
+
+    return (choice == 'Y' || choice == 'y');
+}
+
+int main() 
+{
+    StellarSystem system;
+    std::cout << "0 = Create Stellar System. 1 = Review File. 2 = Edit System. 3 = Edit Planet. 4 = Edit Parameter. ";
+    std::cin >> Z;
+  switch (Z)
+    {
+    case 0:
+      {
+    promptUserInput(system);
+
+    printStellarSystem(system);
+
+    if (confirmSave()) 
+    {
+        saveToFile(system);
+    }
+      }
+      break;
+    case 1:
+      {
+        loadAndPrintFile();
+    //    if (confirmLoad()) 
+    //{
+    //  loadAndUpdateMap(system);
+    //}
+        Z = -1;
+      }
+      break;
+    case 2:
+      {
+        loadAndUpdateMap(system);
+      }
+      break;
+    case 3:
+      {
+        loadAndPrintFile();
+      }
+      break;
+    case 4:
+      {
+        loadAndPrintFile();
+      }
+      break;
+    }
+
+    return 0;
+}
